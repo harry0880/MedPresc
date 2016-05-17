@@ -60,7 +60,7 @@ public class ActivityViewPatient extends AppCompatActivity {
     private Card generate()
     {
         return  new Card.Builder(this)
-                .setTag("Medi")
+                .setTag("Medicine")
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_welcome_card_layout)
                 .setTitle("Medicine Name")
