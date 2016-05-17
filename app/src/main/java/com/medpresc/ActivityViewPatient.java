@@ -65,7 +65,7 @@ public class ActivityViewPatient extends AppCompatActivity {
                 .setLayout(R.layout.material_welcome_card_layout)
                 .setTitle("Medicine Name")
                 //.setTitleColor(Color.WHITE)
-                .setDescription("before Meals")
+                .setDescription("after meal Meals")
               //  .setDescriptionColor(Color.WHITE)
                 .setSubtitle("Twice a Day")
                 .setSubtitleColor(Color.BLACK)
