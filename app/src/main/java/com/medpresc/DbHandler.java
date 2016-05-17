@@ -137,10 +137,10 @@ public class DbHandler extends SQLiteOpenHelper {
         }while (cr.moveToNext());
     return statelist;
     }
-    public ArrayList<District> getDistrict()
+    public ArrayList<District> getDistrict(String Statecode)
     {
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cr=db.rawQuery("select * from "+DbConstant.T_District_Master+";",null);
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_District_Master+" where "+DbConstant.C_Dist_Scode+"="+Statecode,null);
         cr.moveToFirst();
         ArrayList<District> districtlist=new ArrayList<District>();
         do {
