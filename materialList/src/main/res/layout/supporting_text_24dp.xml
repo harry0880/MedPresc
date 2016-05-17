@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          style="@style/Material_Card_Supporting_Text_24dp"
+          android:id="@+id/supportingText"/>
