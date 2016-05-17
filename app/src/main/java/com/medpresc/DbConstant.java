@@ -23,7 +23,7 @@ public class DbConstant {
     public  static final String C_Doc_Reg_Detail="DocRegName";
 
 
-    public  static final String T_Doc_Spl_Type="TBLDocSplMaster";
+    public  static final String T_Doc_Spl_Type="Hanshal";
     public  static final String C_Doc_Spl_ID="DocSplID";
     public  static final String C_Doc_Spl_Detail="DocSplName";
 
