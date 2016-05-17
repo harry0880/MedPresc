@@ -26,7 +26,7 @@ public class DbHandler extends SQLiteOpenHelper {
     JSONObject jsonResponse ;
 
     final String NameSpace="http://tempuri.org/";
-    String URL="http://10.145.24.148/Service.asmx";
+    String URL="http://192.168.0.100/Service.asmx";
 
     String LoadMasterMathod = "master";
     String SoapLinkMaster="http://tempuri.org/master";
