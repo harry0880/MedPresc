@@ -51,7 +51,7 @@ public class ActivityViewPatient extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own hanshal", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Replace with your own harry", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -60,7 +60,7 @@ public class ActivityViewPatient extends AppCompatActivity {
     private Card generate()
     {
         return  new Card.Builder(this)
-                .setTag("Medicine")
+                .setTag("Medi")
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_welcome_card_layout)
                 .setTitle("Medicine Name")
