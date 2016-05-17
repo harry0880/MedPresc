@@ -63,7 +63,7 @@ public class ActivityViewPatient extends AppCompatActivity {
                 .setTag("Medi")
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_welcome_card_layout)
-                .setTitle("Medicine Name")
+                .setTitle("harry Name")
                 //.setTitleColor(Color.WHITE)
                 .setDescription("After Meals")
               //  .setDescriptionColor(Color.WHITE)
