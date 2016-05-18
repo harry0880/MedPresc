@@ -4,7 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.medpresc.Activity_Doc_Registration"
+    tools:showIn="@layout/activity_activity__doc__registration">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -13,10 +16,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.medpresc.Activity_Doc_Registration"
     android:orientation="vertical"
-    tools:showIn="@layout/activity_activity__doc__registration">
+    >
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etName"

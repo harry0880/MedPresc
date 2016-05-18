@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.medpresc.GetSet.DocRegistrationGetSet;
 import com.medpresc.SpinnerAdapters.District;
+import com.medpresc.SpinnerAdapters.DocRegType;
 import com.medpresc.SpinnerAdapters.InstituteName;
 import com.medpresc.SpinnerAdapters.Speciality;
 import com.medpresc.SpinnerAdapters.State;
@@ -126,8 +127,8 @@ public class DbHandler extends SQLiteOpenHelper {
                     }
                     if(i==4)
                     {
-                        values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("splid").toString());
-                        values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("spldesc").toString());
+                        values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("Instid").toString());
+                        values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("Instname").toString());
                         SQLiteDatabase writeableDB = getWritableDatabase();
                         writeableDB.insert(DbConstant.T_Doc_Inst, null, values);
                         writeableDB.close();
@@ -262,7 +263,19 @@ public class DbHandler extends SQLiteOpenHelper {
         return specialities;
     }
 
+    public ArrayList<DocRegType> getDocRegType()
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Reg_Type+";",null);
+        cr.moveToFirst();
+        ArrayList<DocRegType> specialities=new ArrayList<DocRegType>();
+        do {
+            specialities.add(new DocRegType(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return specialities;
+    }
 
+//Viewing DB
     public ArrayList<Cursor> getData(String Query) {
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();

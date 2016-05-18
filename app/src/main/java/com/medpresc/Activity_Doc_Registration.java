@@ -12,26 +12,32 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.medpresc.SpinnerAdapters.District;
+import com.medpresc.SpinnerAdapters.DocRegType;
 import com.medpresc.SpinnerAdapters.InstituteName;
 import com.medpresc.SpinnerAdapters.Speciality;
 import com.medpresc.SpinnerAdapters.State;
+import com.medpresc.utils.ProgressGenerator;
 
 import java.util.ArrayList;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class Activity_Doc_Registration extends AppCompatActivity {
+public class Activity_Doc_Registration extends AppCompatActivity implements  ProgressGenerator.OnCompleteListener {
     DbHandler db;
-    MaterialSpinner sp_State,spDistrict,spInstitute,spSpeciality;
+    MaterialSpinner sp_State,spDistrict,spInstitute,spSpeciality,spDocRegType;
     Context context;
     ArrayAdapter<District> districtAdapter;
     ArrayAdapter<State> stateAdapter;
     ArrayAdapter<InstituteName> instituteNameAdapter;
     ArrayAdapter<Speciality> specialityAdapter;
+    ArrayAdapter<DocRegType> docRegTypeAdapter;
     Boolean state_spinner_flag=false;
     FloatingActionButton fab;
     String[] initDistrict = {"District"};
+     ActionProcessButton btnSignIn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +46,12 @@ public class Activity_Doc_Registration extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initialize();
         context=this;
-
+        final ProgressGenerator progressGenerator = new ProgressGenerator(this);
         setStateSpinner();
         setDistrictSpinner(initDistrict);
-       // setInstName();
+        setInstName();
         setSpSpeciality();
+        setSpDocRegType();
 
         sp_State.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                                @Override
@@ -69,6 +76,12 @@ public class Activity_Doc_Registration extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressGenerator.start(btnSignIn);
+            }
+        });
     }
 
     void initialize()
@@ -79,6 +92,9 @@ public class Activity_Doc_Registration extends AppCompatActivity {
         spDistrict=(MaterialSpinner)findViewById(R.id.spDistrict);
         spInstitute=(MaterialSpinner)findViewById(R.id.spInstitute);
         spSpeciality=(MaterialSpinner)findViewById(R.id.spSpeciality);
+        spDocRegType=(MaterialSpinner)findViewById(R.id.spDocRegistration);
+        btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
+        btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
 
     }
 
@@ -119,10 +135,22 @@ public class Activity_Doc_Registration extends AppCompatActivity {
         spSpeciality.setAdapter(specialityAdapter);
     }
 
+    void setSpDocRegType()
+    {
+        docRegTypeAdapter=new ArrayAdapter<DocRegType>(this,android.R.layout.simple_spinner_item,db.getDocRegType());
+        docRegTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spDocRegType.setAdapter(docRegTypeAdapter);
+    }
+
     @Override
     public void onBackPressed() {
         startActivity(new Intent(Activity_Doc_Registration.this,AndroidDatabaseManager.class));
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }
