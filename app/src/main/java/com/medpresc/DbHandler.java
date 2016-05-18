@@ -3,10 +3,14 @@ package com.medpresc;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.medpresc.SpinnerAdapters.District;
+import com.medpresc.SpinnerAdapters.InstituteName;
+import com.medpresc.SpinnerAdapters.Speciality;
 import com.medpresc.SpinnerAdapters.State;
 
 import org.json.JSONArray;
@@ -69,10 +73,10 @@ public class DbHandler extends SQLiteOpenHelper {
             return false;
         }
 
-        String[] Response= res.split("#"),JsonNames={"State","District","DocRegistration","DocSpeciality",};
+        String[] Response= res.split("#"),JsonNames={"State","District","DocRegistration","DocSpeciality","InstName"};
         int lengthJsonArr ;
         try {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 Response[i]="{ \""+JsonNames[i]+"\" :"+Response[i]+" }";
                 jsonResponse = new JSONObject(Response[i]);
                 JSONArray jsonMainNode = jsonResponse.optJSONArray(JsonNames[i]);
@@ -115,6 +119,14 @@ public class DbHandler extends SQLiteOpenHelper {
                         writeableDB.insert(DbConstant.T_Doc_Spl_Type, null, values);
                         writeableDB.close();
                     }
+                    if(i==4)
+                    {
+                        values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("splid").toString());
+                        values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("spldesc").toString());
+                        SQLiteDatabase writeableDB = getWritableDatabase();
+                        writeableDB.insert(DbConstant.T_Doc_Inst, null, values);
+                        writeableDB.close();
+                    }
                 }
             }
         }
@@ -137,6 +149,7 @@ public class DbHandler extends SQLiteOpenHelper {
         }while (cr.moveToNext());
     return statelist;
     }
+
     public ArrayList<District> getDistrict(String Statecode)
     {
         SQLiteDatabase db=getReadableDatabase();
@@ -149,4 +162,70 @@ public class DbHandler extends SQLiteOpenHelper {
         return districtlist;
     }
 
+    public ArrayList<InstituteName> getInstName()
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+";",null);
+        cr.moveToFirst();
+        ArrayList<InstituteName> instituteNames=new ArrayList<InstituteName>();
+        do {
+            instituteNames.add(new InstituteName(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return instituteNames;
+    }
+
+    public ArrayList<Speciality> getSpecName()
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+";",null);
+        cr.moveToFirst();
+        ArrayList<Speciality> specialities=new ArrayList<Speciality>();
+        do {
+            specialities.add(new Speciality(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return specialities;
+    }
+
+
+    public ArrayList<Cursor> getData(String Query) {
+        //get writable database
+        SQLiteDatabase sqlDB = this.getWritableDatabase();
+        String[] columns = new String[] { "mesage" };
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2= new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
+
+        try{
+            String maxQuery = Query ;
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(maxQuery, null);
+
+
+            //add value to cursor2
+            Cursor2.addRow(new Object[] { "Success" });
+
+            alc.set(1,Cursor2);
+            if (null != c && c.getCount() > 0) {
+
+
+                alc.set(0,c);
+                c.moveToFirst();
+
+                return alc ;
+            }
+            return alc;
+        } catch(Exception sqlEx){
+            Log.d("printing exception", sqlEx.getMessage());
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        }
+
+
+    }
 }

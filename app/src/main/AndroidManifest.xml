@@ -29,13 +29,18 @@
             android:name=".Activity_Doc_Registration"
             android:label="@string/title_activity_activity__doc__registration"
             android:theme="@style/AppTheme.NoActionBar">
+          >
+        </activity>
+        <activity android:name=".splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".splash">
+        <activity
+            android:name=".AndroidDatabaseManager"
+            android:label="@string/title_activity_activity_view_patient"
+            android:theme="@style/AppTheme.NoActionBar" >
 
         </activity>
     </application>
