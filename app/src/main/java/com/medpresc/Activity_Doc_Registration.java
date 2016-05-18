@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.medpresc.SpinnerAdapters.District;
 import com.medpresc.SpinnerAdapters.State;
@@ -21,7 +22,9 @@ public class Activity_Doc_Registration extends AppCompatActivity {
     DbHandler db;
     MaterialSpinner sp_State,spDistrict,spInstitute,spSpeciality;
     Context context;
+    ArrayList<State> st;
     ArrayAdapter<District> districtAdapter;
+    Boolean state_spinner_flag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,31 +35,32 @@ public class Activity_Doc_Registration extends AppCompatActivity {
         db=new DbHandler(Activity_Doc_Registration.this);
         sp_State = (MaterialSpinner) findViewById(R.id.spState);
         spDistrict=(MaterialSpinner)findViewById(R.id.spDistrict);
-
+        st=db.getState();
         ArrayAdapter<State> adapter = new ArrayAdapter<State>(this, android.R.layout.simple_spinner_item,db.getState());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_State.setAdapter(adapter);
 
         sp_State.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                State state = (State) parent.getSelectedItem();
-                    districtAdapter = new ArrayAdapter<District>(context, android.R.layout.simple_spinner_item,db.getDistrict(state.getStateId()));
-                    districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spDistrict.setAdapter(districtAdapter);
-            }
+                                               @Override
+                                               public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+                                                  if(state_spinner_flag) {
+                                                      State state=((State) sp_State.getSelectedItem());
+                                                      districtAdapter = new ArrayAdapter<District>(context, android.R.layout.simple_spinner_item, db.getDistrict(state.getStateId()));
+                                                      districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                      spDistrict.setAdapter(districtAdapter);
+                                                  }
+                                                   state_spinner_flag=true;
+                                               }
 
 
+                                               @Override
+                                               public void onNothingSelected(AdapterView<?> parent) {
 
+                                               }
+                                           });
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
