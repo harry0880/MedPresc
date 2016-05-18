@@ -194,7 +194,7 @@ public class DbHandler extends SQLiteOpenHelper {
      request.addProperty(pi);
 
      pi.setName("imei");
-     pi.setValue(obj.getName());
+     pi.setValue("123");
      pi.setType(String.class);
      request.addProperty(pi);
 

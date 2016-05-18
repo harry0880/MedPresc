@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.medpresc.GetSet.DocRegistrationGetSet;
 import com.medpresc.SpinnerAdapters.District;
 import com.medpresc.SpinnerAdapters.DocRegType;
 import com.medpresc.SpinnerAdapters.InstituteName;
@@ -33,10 +34,11 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
     ArrayAdapter<InstituteName> instituteNameAdapter;
     ArrayAdapter<Speciality> specialityAdapter;
     ArrayAdapter<DocRegType> docRegTypeAdapter;
-    Boolean state_spinner_flag=false;
+    Boolean state_spinner_flag=false,District_spinner_flag=false,Institute_Spinner_flag=false;
     FloatingActionButton fab;
     String[] initDistrict = {"District"};
      ActionProcessButton btnSignIn;
+    DocRegistrationGetSet getset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                                   if(state_spinner_flag) {
                                                       State state=((State) sp_State.getSelectedItem());
+                                                      getset.setState(state.getStateId());
                                                      setDistrictSpinner(state.getStateId());
                                                   }
                                                    state_spinner_flag=true;
@@ -66,8 +69,33 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                                                public void onNothingSelected(AdapterView<?> parent) {
                                                }
                                            });
+        
+        spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(District_spinner_flag)
+                {
+                    getset.setDistrict(((District) spDistrict.getSelectedItem()).getDistrict_Id());
+                }
+                District_spinner_flag=true;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
+        spInstitute.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               if(Institute_Spinner_flag)
+                getset.setInstitute(((InstituteName)spInstitute.getSelectedItem()).getInstituteId());
+                Institute_Spinner_flag=true;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +123,6 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         spDocRegType=(MaterialSpinner)findViewById(R.id.spDocRegistration);
         btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
         btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
-
     }
 
     void setDistrictSpinner(String scode)
@@ -118,8 +145,6 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_State.setAdapter(stateAdapter);
     }
-
-
 
     void setInstName()
     {
