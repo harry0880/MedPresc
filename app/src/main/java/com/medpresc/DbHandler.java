@@ -153,46 +153,55 @@ public class DbHandler extends SQLiteOpenHelper {
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("docemail");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getEmailID());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("docmobile");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getPhoneNumber());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("stateid");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getState());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("districtid");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getDistrict());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("instituteid");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getInstitute());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("docregistrationid");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getRegNumber());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("docregistrationno");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getRegNumber());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("specialityid");
-     pi.setValue(obj.getName());
+     pi.setValue(obj.getSpeciality());
      pi.setType(String.class);
      request.addProperty(pi);
 
+        pi = new PropertyInfo();
      pi.setName("imei");
      pi.setValue("123");
      pi.setType(String.class);
@@ -216,6 +225,7 @@ public class DbHandler extends SQLiteOpenHelper {
      return true;
  }
     public ArrayList<State> getState()
+
     {
         SQLiteDatabase db=getReadableDatabase();
         Cursor cr=db.rawQuery("select * from "+DbConstant.T_State_Master+";",null);

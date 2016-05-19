@@ -41,4 +41,6 @@ public class ProgressGenerator {
     private int generateDelay() {
         return random.nextInt(1000);
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.medpresc;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
@@ -34,11 +36,12 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
     ArrayAdapter<InstituteName> instituteNameAdapter;
     ArrayAdapter<Speciality> specialityAdapter;
     ArrayAdapter<DocRegType> docRegTypeAdapter;
-    Boolean state_spinner_flag=false,District_spinner_flag=false,Institute_Spinner_flag=false;
+    Boolean state_spinner_flag=false,District_spinner_flag=false,Institute_Spinner_flag=false,Speciality_Spinner_flag=false,Reg_Spinner_flag=false;
     FloatingActionButton fab;
     String[] initDistrict = {"District"};
      ActionProcessButton btnSignIn;
     DocRegistrationGetSet getset;
+    EditText etName,etPhone,etEmail,etDocReg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                                                       State state=((State) sp_State.getSelectedItem());
                                                       getset.setState(state.getStateId());
                                                      setDistrictSpinner(state.getStateId());
+                                                      District_spinner_flag=false;
                                                   }
                                                    state_spinner_flag=true;
                                                }
@@ -69,13 +73,14 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                                                public void onNothingSelected(AdapterView<?> parent) {
                                                }
                                            });
-        
+
         spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(District_spinner_flag)
                 {
-                    getset.setDistrict(((District) spDistrict.getSelectedItem()).getDistrict_Id());
+                   District district=((District) spDistrict.getSelectedItem());
+                    getset.setDistrict(district.getDistrict_Id());
                 }
                 District_spinner_flag=true;
             }
@@ -97,6 +102,36 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
             }
         });
 
+        spSpeciality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(Speciality_Spinner_flag)
+                {
+                    getset.setSpeciality(((Speciality)spSpeciality.getSelectedItem()).getSpecialityId());
+                }
+                Speciality_Spinner_flag=true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spDocRegType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(Reg_Spinner_flag)
+                getset.setRegType(((DocRegType)spDocRegType.getSelectedItem()).getDocRegId());
+                Reg_Spinner_flag=true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,10 +139,17 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                         .setAction("Action", null).show();
             }
         });
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressGenerator.start(btnSignIn);
+                getset.setName(etName.getText().toString());
+                getset.setEmailID(etEmail.getText().toString());
+                getset.setPhoneNumber(etPhone.getText().toString());
+                getset.setRegNumber(etDocReg.getText().toString());
+                new SubmitAsyncTask().execute(getset);
+
             }
         });
     }
@@ -123,6 +165,11 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         spDocRegType=(MaterialSpinner)findViewById(R.id.spDocRegistration);
         btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
         btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+        etDocReg=(EditText)findViewById(R.id.etDocRegistration);
+        etEmail=(EditText)findViewById(R.id.etMail);
+        etName=(EditText)findViewById(R.id.etName);
+        etPhone=(EditText)findViewById(R.id.etContact);
+        getset= new DocRegistrationGetSet();
     }
 
     void setDistrictSpinner(String scode)
@@ -176,6 +223,14 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
 
     @Override
     public void onComplete() {
+    }
 
+    private class SubmitAsyncTask extends AsyncTask<DocRegistrationGetSet,Void,Boolean>
+    {
+
+        @Override
+        protected Boolean doInBackground(DocRegistrationGetSet... params) {
+            return db.SendDoctorRegistartion(params[0]);
+        }
     }
 }
