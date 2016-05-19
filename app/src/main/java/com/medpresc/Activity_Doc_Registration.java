@@ -1,5 +1,6 @@
 package com.medpresc;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,8 +24,7 @@ import com.medpresc.SpinnerAdapters.Speciality;
 import com.medpresc.SpinnerAdapters.State;
 import com.medpresc.utils.ProgressGenerator;
 
-import java.util.ArrayList;
-
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class Activity_Doc_Registration extends AppCompatActivity implements  ProgressGenerator.OnCompleteListener {
@@ -143,7 +143,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressGenerator.start(btnSignIn);
+
                 getset.setName(etName.getText().toString());
                 getset.setEmailID(etEmail.getText().toString());
                 getset.setPhoneNumber(etPhone.getText().toString());
@@ -227,10 +227,36 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
 
     private class SubmitAsyncTask extends AsyncTask<DocRegistrationGetSet,Void,Boolean>
     {
+        ProgressDialog dialog=new ProgressDialog(context);
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Please Wait!!!");
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            super.onPreExecute();
+        }
 
         @Override
         protected Boolean doInBackground(DocRegistrationGetSet... params) {
             return db.SendDoctorRegistartion(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+           if(dialog.isShowing() && aBoolean)
+           {
+               dialog.dismiss();
+            new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE).setTitleText("Submitted").setContentText("Your Apllication have been submitted ").setConfirmClickListener(null).show();
+           }
+            else
+           {
+               dialog.dismiss();
+               new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE).setTitleText("Error!!!").show();
+
+           }
+            super.onPostExecute(aBoolean);
         }
     }
 }

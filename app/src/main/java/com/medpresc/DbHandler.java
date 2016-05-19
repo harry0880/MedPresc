@@ -144,6 +144,7 @@ public class DbHandler extends SQLiteOpenHelper {
         return  true;
     }
     public Boolean SendDoctorRegistartion(DocRegistrationGetSet obj)
+
     {  String res= null;
      SoapObject request=new SoapObject(NameSpace, SendDoctorRegistration);
      PropertyInfo pi = new PropertyInfo();
@@ -224,6 +225,8 @@ public class DbHandler extends SQLiteOpenHelper {
 
      return true;
  }
+
+
     public ArrayList<State> getState()
 
     {
