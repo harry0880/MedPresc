@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.medpresc.GetSet.DocRegistrationGetSet;
@@ -39,7 +38,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
     Boolean state_spinner_flag=false,District_spinner_flag=false,Institute_Spinner_flag=false,Speciality_Spinner_flag=false,Reg_Spinner_flag=false;
     FloatingActionButton fab;
     String[] initDistrict = {"District"};
-     ActionProcessButton btnSignIn;
+    ActionProcessButton btnSignIn;
     DocRegistrationGetSet getset;
     EditText etName,etPhone,etEmail,etDocReg;
 
@@ -214,12 +213,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         spDocRegType.setAdapter(docRegTypeAdapter);
     }
 
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(Activity_Doc_Registration.this,AndroidDatabaseManager.class));
-        finish();
-        super.onBackPressed();
-    }
+
 
     @Override
     public void onComplete() {

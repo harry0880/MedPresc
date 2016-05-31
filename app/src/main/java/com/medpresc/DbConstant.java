@@ -1,8 +1,8 @@
 package com.medpresc;
-
 /**
  * Created by Administrator on 05/05/2016.
  */
+
 public class DbConstant {
 
     public static final String DBNAME = "Master";
@@ -28,6 +28,9 @@ public class DbConstant {
     public  static final String T_Doc_Inst="TBLInsMaster";
     public  static final String C_Doc_Inst_ID="InstID";
     public  static final String C_Doc_Inst_Detail="DocInstName";
+
+
+
 
     public static final String CREATE_TABLE_STATE_MASTER = "CREATE TABLE "+ T_State_Master + "(" + C_Scode/*0*/ + " TEXT,"
             + C_Sname/*1*/ +" TEXT);";
