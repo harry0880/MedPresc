@@ -3,6 +3,8 @@ package com.medpresc;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.GpsSatellite;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.medpresc.GetSet.DocRegistrationGetSet;
 import com.medpresc.SpinnerAdapters.District;
 import com.medpresc.SpinnerAdapters.DocRegType;
@@ -30,6 +34,8 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
     DbHandler db;
     MaterialSpinner sp_State,spDistrict,spInstitute,spSpeciality,spDocRegType;
     Context context;
+
+    String instanceId,tokenId;
     ArrayAdapter<District> districtAdapter;
     ArrayAdapter<State> stateAdapter;
     ArrayAdapter<InstituteName> instituteNameAdapter;
@@ -50,6 +56,8 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
         setSupportActionBar(toolbar);
         initialize();
         context=this;
+        instanceId= FirebaseInstanceId.getInstance().getId();
+        tokenId=FirebaseInstanceId.getInstance().getToken();
         final ProgressGenerator progressGenerator = new ProgressGenerator(this);
         setStateSpinner();
         setDistrictSpinner(initDistrict);
@@ -148,6 +156,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                 getset.setPhoneNumber(etPhone.getText().toString());
                 getset.setRegNumber(etDocReg.getText().toString());
                 new SubmitAsyncTask().execute(getset);
+             //   SharedPreferences.Editor prefs=context.getSharedPreferences()
 
             }
         });
@@ -243,6 +252,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
            {
                dialog.dismiss();
             new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE).setTitleText("Submitted").setContentText("Your Apllication have been submitted ").setConfirmClickListener(null).show();
+           new send_Unique_Token_to_server().execute();
            }
             else
            {
@@ -251,6 +261,16 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
 
            }
             super.onPostExecute(aBoolean);
+        }
+    }
+
+
+    private class send_Unique_Token_to_server extends AsyncTask<Void,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return db.CallWebService_Send_Token(instanceId,tokenId,getset.getPhoneNumber());
         }
     }
 }

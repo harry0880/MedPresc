@@ -24,15 +24,21 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.medpresc.DbHandler;
 import com.medpresc.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
     public static final String ACTION_1 = "action_1";
+    DbHandler db;
+    String messageBody,patientid,DocId,appId;
+    static int Unique_Integer=0;
+
     /**
      * Called when message is received.
      *
@@ -47,18 +53,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // message, here is where that should be initiated. See sendNotification method below.
        /* Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());*/
-        sendNotification(remoteMessage.getData().get("message"));
+        sendNotification(remoteMessage);
     }
     // [END receive_message]
 
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+
      */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, NotificationActionService.class)
-                .setAction(ACTION_1);
+    private void sendNotification(RemoteMessage remoteMessage) {
+        db=new DbHandler(getApplicationContext());
+         messageBody=remoteMessage.getData().get("message");
+      DocId=remoteMessage.getData().get("docotrid");
+         patientid=remoteMessage.getData().get("patientId");
+         appId=remoteMessage.getData().get("AppoinmentNumber");
+        Intent intent = new Intent();
+        intent.setAction(ACTION_1);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 intent, PendingIntent.FLAG_ONE_SHOT);
@@ -67,19 +78,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
                 .setContentTitle("Medical")
-                .setContentText(messageBody)
+                .setContentText("New Appointment")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .addAction(R.drawable.ic_check,"Accept",pendingIntent);
+                .addAction(R.drawable.ic_check,"Accept",pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(messageBody))
+                ;
+
+// Moves the expanded layout object into the notification object.
 
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(Unique_Integer /* ID of notification */, notificationBuilder.build());
+        Unique_Integer++;
     }
 
-    public static class NotificationActionService extends IntentService {
+    public  class NotificationActionService extends IntentService {
 
         public NotificationActionService() {
             super(NotificationActionService.class.getSimpleName());
@@ -87,10 +104,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         @Override
         protected void onHandleIntent(Intent intent) {
+
             String action = intent.getAction();
-
+            NotificationManagerCompat.from(this).cancel(Unique_Integer);
             if (ACTION_1.equals(action)) {
-
+         /*   db.CallWebService_AppointmentConfirm(DocId,patientid,appId,"Yes");*/
+                NotificationManagerCompat.from(this).cancel(Unique_Integer);
                 // TODO: handle action 1.
                 // If you want to cancel the notification: NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID);
             }

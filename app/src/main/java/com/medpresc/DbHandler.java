@@ -41,6 +41,12 @@ public class DbHandler extends SQLiteOpenHelper {
     String SendDoctorRegistration = "DoctoRegistration";
     String SoapLinkSendDoctorRegistration="http://tempuri.org/DoctoRegistration";
 
+    String Send_Reg_Token="AndroidRegistration";
+    String Soap_Send_Reg_Toekn="http://tempuri.org/AndroidRegistration";
+
+    String Appointment_Confirmation="AppoinmentConfirmation";
+    String Soap_Appointment_Confirmation="http://tempuri.org/AppoinmentConfirmation";
+
 
     public DbHandler(Context context) {
         super(context, DbConstant.DBNAME, null, DbConstant.DBVERSION);
@@ -327,7 +333,97 @@ public class DbHandler extends SQLiteOpenHelper {
             alc.set(1,Cursor2);
             return alc;
         }
-
-
     }
+
+
+   public String CallWebService_Send_Token(String InstanceId,String token,String Phone)
+    {
+        String res= null;
+        SoapObject request=new SoapObject(NameSpace, Send_Reg_Token);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("AndroidRegID");
+        pi.setValue(InstanceId);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("AndroidRegToken");
+        pi.setValue(token);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("MobileNo");
+        pi.setValue(Phone);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("ApplicationType");
+        pi.setValue("Doctor");
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(Soap_Send_Reg_Toekn, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+        return res;
+    }
+
+    public String CallWebService_AppointmentConfirm(String Docid,String PatientId,String appointmentId,String acceptance)
+    {
+        String res= null;
+        SoapObject request=new SoapObject(NameSpace, Appointment_Confirmation);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("AppoinmentNumber");
+        pi.setValue(appointmentId);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Doctorid");
+        pi.setValue(Docid);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("patientid");
+        pi.setValue(PatientId);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("AppoinmentConfirmationbit");
+        pi.setValue(acceptance);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(Soap_Appointment_Confirmation, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+        return res;
+    }
+
 }

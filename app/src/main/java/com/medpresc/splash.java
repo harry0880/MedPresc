@@ -6,18 +6,30 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.io.File;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class splash extends AppCompatActivity {
 DbHandler dbh;
     Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=this;
         setContentView(R.layout.activity_splash);
         dbh=new DbHandler(splash.this);
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        if(!doesDatabaseExist(getApplicationContext(),DbConstant.DBNAME))
         new LoadMaster().execute();
+        else
+        {
+            startActivity(new Intent(splash.this,Activity_Doc_Registration.class));
+        }
+
     }
 
     private class LoadMaster extends AsyncTask<Void,Void,Boolean>
@@ -39,5 +51,9 @@ DbHandler dbh;
             }
 
         }
+    }
+    private static boolean doesDatabaseExist(Context context, String dbName) {
+        File dbFile = context.getDatabasePath(dbName);
+        return dbFile.exists();
     }
 }
