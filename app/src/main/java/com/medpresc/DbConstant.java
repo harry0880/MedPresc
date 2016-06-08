@@ -46,7 +46,9 @@ public class DbConstant {
             + C_Doc_Spl_Detail/*1*/ +" TEXT);";
 
     public static final String CREATE_TABLE_Institute_MASTER = "CREATE TABLE "+ T_Doc_Inst + "(" + C_Doc_Inst_ID/*0*/ + " TEXT,"
-            + C_Doc_Inst_Detail/*1*/ +" TEXT);";
+            + C_Doc_Inst_Detail/*1*/ +" TEXT,"
+            + C_Scode+" TEXT,"
+            +C_Dist_Code+" TEXT);";
 
 
 }

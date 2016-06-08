@@ -88,6 +88,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
                 {
                    District district=((District) spDistrict.getSelectedItem());
                     getset.setDistrict(district.getDistrict_Id());
+                    setInstName();
                 }
                 District_spinner_flag=true;
             }
@@ -160,7 +161,11 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
 
             }
         });
+
+
     }
+
+
 
     void initialize()
     {
@@ -203,7 +208,7 @@ public class Activity_Doc_Registration extends AppCompatActivity implements  Pro
 
     void setInstName()
     {
-        instituteNameAdapter=new ArrayAdapter<InstituteName>(this,android.R.layout.simple_spinner_item,db.getInstName());
+        instituteNameAdapter=new ArrayAdapter<InstituteName>(this,android.R.layout.simple_spinner_item,db.getInstName(getset.getDistrict(),getset.getState()));
         instituteNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spInstitute.setAdapter(instituteNameAdapter);
     }

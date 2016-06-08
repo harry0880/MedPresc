@@ -64,15 +64,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void sendNotification(RemoteMessage remoteMessage) {
         db=new DbHandler(getApplicationContext());
-         messageBody=remoteMessage.getData().get("message");
-      DocId=remoteMessage.getData().get("docotrid");
-         patientid=remoteMessage.getData().get("patientId");
-         appId=remoteMessage.getData().get("AppoinmentNumber");
-        Intent intent = new Intent();
-        intent.setAction(ACTION_1);
+        messageBody=remoteMessage.getData().get("message");
+        DocId=remoteMessage.getData().get("doctorid");
+        patientid=remoteMessage.getData().get("patientId");
+        appId=remoteMessage.getData().get("AppoinmentNumber");
+
+
+        Intent intent = new Intent(ACTION_1);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+        intent.putExtra("DocId",DocId);
+        intent.putExtra("PatientId",patientid);
+        intent.putExtra("AppId",appId);
+        intent.putExtra(" ","Yes");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
                 intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentReject = new Intent(ACTION_1);
+        intentReject.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intentReject.putExtra("DocId",DocId);
+        intentReject.putExtra("PatientId",patientid);
+        intentReject.putExtra("AppId",appId);
+        intentReject.putExtra("Accpetance","No");
+        PendingIntent pendingIntentReject = PendingIntent.getBroadcast(this, 0,
+                intentReject, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -82,12 +96,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .addAction(R.drawable.ic_check,"Accept",pendingIntent)
+                .addAction(R.drawable.met_ic_clear,"Reject",pendingIntentReject)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(messageBody))
-                ;
+                        .bigText(messageBody)).setAutoCancel(true);
 
 // Moves the expanded layout object into the notification object.
-
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -96,23 +109,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Unique_Integer++;
     }
 
-    public  class NotificationActionService extends IntentService {
-
-        public NotificationActionService() {
-            super(NotificationActionService.class.getSimpleName());
-        }
-
-        @Override
-        protected void onHandleIntent(Intent intent) {
-
-            String action = intent.getAction();
-            NotificationManagerCompat.from(this).cancel(Unique_Integer);
-            if (ACTION_1.equals(action)) {
-         /*   db.CallWebService_AppointmentConfirm(DocId,patientid,appId,"Yes");*/
-                NotificationManagerCompat.from(this).cancel(Unique_Integer);
-                // TODO: handle action 1.
-                // If you want to cancel the notification: NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID);
-            }
-        }
-    }
 }

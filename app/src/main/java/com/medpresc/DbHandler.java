@@ -135,6 +135,8 @@ public class DbHandler extends SQLiteOpenHelper {
                     {
                         values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("Instid").toString());
                         values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("Instname").toString());
+                        values.put(DbConstant.C_Scode,jsonChildNode.optString("HealthInstituteSCode"));
+                        values.put(DbConstant.C_Dist_Code,jsonChildNode.optString("HealthInstituteDCode"));
                         SQLiteDatabase writeableDB = getWritableDatabase();
                         writeableDB.insert(DbConstant.T_Doc_Inst, null, values);
                         writeableDB.close();
@@ -258,12 +260,18 @@ public class DbHandler extends SQLiteOpenHelper {
         return districtlist;
     }
 
-    public ArrayList<InstituteName> getInstName()
+    public ArrayList<InstituteName> getInstName(String District, String State)
     {
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+";",null);
-        cr.moveToFirst();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+" where "+DbConstant.C_Scode+"="+State+" and "+DbConstant.C_Dist_Code+"="+District+";",null);
         ArrayList<InstituteName> instituteNames=new ArrayList<InstituteName>();
+        if(cr.getCount()<=0)
+        {
+            instituteNames.add(new InstituteName("0","No Institiute Found"));
+            return instituteNames;
+        }
+        cr.moveToFirst();
+
         do {
             instituteNames.add(new InstituteName(cr.getString(0),cr.getString(1)));
         }while (cr.moveToNext());

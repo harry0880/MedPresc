@@ -52,7 +52,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".utils.MyFirebaseMessagingService$NotificationActionService" />
         <!-- [END firebase_iid_service] -->
         <receiver android:name=".utils.NotificationClick">
             <intent-filter>
